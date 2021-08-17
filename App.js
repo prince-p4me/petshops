@@ -1,73 +1,35 @@
-import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  Text,
-  StatusBar,
-  StyleSheet,
-  FlatList,
-  useColorScheme,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+// In App.js in a new project
 
-const App: () => Node = () => {
+import * as React from 'react';
+import { SafeAreaView, StatusBar, useColorScheme, LogBox } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import StackNavigator from "./src/navigation/stack";
+import { navigationRef, navigate, isReadyRef } from "./src/navigation/navigation";
+
+import { Provider } from 'react-redux';
+import { persistor, store } from './src/redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
+
+
+function App() {
   const isDarkMode = useColorScheme() === 'dark';
-  const [data, setSata] = useState([1, 23, 4, 56, 23, 45, 1, 45, 9, 17]);
-
-  const renderItem = ({ item }) => {
-    return (
-      <View style={styles.item}>
-        <Text style={styles.itemText}>{item}</Text>
-      </View>
-    );
-  };
+  LogBox.ignoreAllLogs(true);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <View style={styles.container}>
-        <Text style={styles.title}>
-          Remove the duplicate values by clicking the button provided at the bottom
-        </Text>
-        <FlatList
-          data={data}
-          horizontal={true}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-        />
-        <TouchableOpacity style={styles.button} activeOpacity={.7}
-          onPress={() => setSata([...new Set(data)])}>
-          <Text style={{ fontSize: 16 }}>Remove Duplicate</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView >
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer
+          ref={navigationRef}
+          onReady={() => {
+            isReadyRef.current = true;
+          }}>
+          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+          <StackNavigator />
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
-};
-
-const styles = StyleSheet.create({
-  button: {
-    paddingHorizontal: 15,
-    paddingVertical: 7,
-    backgroundColor: "lightblue"
-  },
-  title: {
-    fontWeight: "600", paddingVertical: 50,
-    fontSize: 16, textAlign: "center"
-  },
-  container: {
-    flex: 1, padding: 10,
-    backgroundColor: "white",
-    alignItems: "center",
-  },
-  item: {
-    height: 50, width: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "orange",
-    marginHorizontal: 7,
-    borderWidth: 1
-  },
-  itemText: { color: "white", fontWeight: "600", fontSize: 16 }
-});
+}
 
 export default App;
