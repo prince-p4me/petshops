@@ -8,11 +8,13 @@ import {
 } from 'react-native';
 import styles from "../utils/styles";
 import * as Actions from "../redux/action"
-import * as Navigation from "../navigation/navigation"
 import * as Utility from "../utils/Utility";
 import Toast from 'react-native-simple-toast';
+import { useNavigation } from "@react-navigation/native";
+
 
 const AddEdit = () => {
+  const navigation = useNavigation();
   const data = useSelector(state => state.getCat);
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
@@ -25,7 +27,8 @@ const AddEdit = () => {
       setName(data.name);
       setBreed(data.breed);
       setDescription(data.desc);
-    }
+      navigation.setOptions({ title: "Edit this item" });
+    } else navigation.setOptions({ title: "Add new item" });
   }, []);
 
   useEffect(() => {
@@ -54,14 +57,14 @@ const AddEdit = () => {
             id: data.id,
             name, breed, desc
           }));
-          Navigation.goBack();
+          navigation.goBack();
           Toast.showWithGravity("Item has been updated . . .", Toast.SHORT, Toast.BOTTOM);
         }
       );
     } else {
       dispatch(Actions.setCatsList({ name, breed, desc }));
       Toast.showWithGravity("Item has been added . . .", Toast.SHORT, Toast.BOTTOM);
-      Navigation.goBack();
+      navigation.goBack();
     };
   }
 
@@ -92,7 +95,7 @@ const AddEdit = () => {
 
       <TouchableOpacity style={styles.submit} activeOpacity={.7}
         onPress={submit}>
-        <Text style={{ fontSize: 16, fontWeight: "600", color: "white" }}>Submit</Text>
+        <Text style={{ fontSize: 16, fontWeight: "600", color: "white" }}>{data.id ? "Update" : "Add"}</Text>
       </TouchableOpacity>
     </View>
   );
