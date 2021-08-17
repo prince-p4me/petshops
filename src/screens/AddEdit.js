@@ -10,6 +10,7 @@ import styles from "../utils/styles";
 import * as Actions from "../redux/action"
 import * as Navigation from "../navigation/navigation"
 import * as Utility from "../utils/Utility";
+import Toast from 'react-native-simple-toast';
 
 const AddEdit = () => {
   const data = useSelector(state => state.getCat);
@@ -54,10 +55,12 @@ const AddEdit = () => {
             name, breed, desc
           }));
           Navigation.goBack();
+          Toast.showWithGravity("Item has been updated . . .", Toast.SHORT, Toast.BOTTOM);
         }
       );
     } else {
       dispatch(Actions.setCatsList({ name, breed, desc }));
+      Toast.showWithGravity("Item has been added . . .", Toast.SHORT, Toast.BOTTOM);
       Navigation.goBack();
     };
   }

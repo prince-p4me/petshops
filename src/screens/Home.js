@@ -18,6 +18,7 @@ import styles from "../utils/styles";
 import * as Navigation from "../navigation/navigation";
 import * as Actions from "../redux/action"
 import * as Utility from "../utils/Utility";
+import Toast from 'react-native-simple-toast';
 
 const Home = () => {
   const data = useSelector(state => state.getCatsList);
@@ -46,6 +47,7 @@ const Home = () => {
               "Do you want to delete this?",
               () => {
                 dispatch(Actions.deleteCat(index));
+                Toast.showWithGravity("Item has been deleted . . .", Toast.SHORT, Toast.BOTTOM);
               }
             )
           }}>
